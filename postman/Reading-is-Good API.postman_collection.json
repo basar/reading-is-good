@@ -1,0 +1,67 @@
+{
+	"info": {
+		"_postman_id": "e04d1621-b600-499e-b9b3-ef68fc24edae",
+		"name": "Reading-is-Good API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "v1",
+			"item": [
+				{
+					"name": "addNewCustomer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": null,\n    \"surname\": \"Çetinkaya\",\n    \"email\": \"basarcetinkaya@gmail.com\",\n    \"address\": \"Ankara\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/customers/add",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"customers",
+								"add"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "http://localhost:8085/api/v1"
+		}
+	]
+}
