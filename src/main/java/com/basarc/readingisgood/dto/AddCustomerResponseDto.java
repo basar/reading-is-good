@@ -1,11 +1,13 @@
-package com.basarc.readingisgood.api;
+package com.basarc.readingisgood.dto;
 
 import lombok.Builder;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
 @Builder
-public class AddCustomerResponse {
+public class AddCustomerResponseDto implements Serializable {
 
     private String id;
     private String name;

@@ -1,8 +1,8 @@
 package com.basarc.readingisgood.controller;
 
 
-import com.basarc.readingisgood.api.AddCustomerRequest;
-import com.basarc.readingisgood.api.AddCustomerResponse;
+import com.basarc.readingisgood.dto.AddCustomerRequestDto;
+import com.basarc.readingisgood.dto.AddCustomerResponseDto;
 import com.basarc.readingisgood.api.ApiConstant;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,9 +15,9 @@ public class CustomerController extends AbstractApiController {
 
     @PostMapping("/add")
     @ResponseBody
-    public ResponseEntity<?> addNewCustomer(@RequestBody @Valid AddCustomerRequest request) {
+    public ResponseEntity<?> addNewCustomer(@RequestBody @Valid AddCustomerRequestDto request) {
 
-        AddCustomerResponse response = AddCustomerResponse.builder()
+        AddCustomerResponseDto response = AddCustomerResponseDto.builder()
                 .id("1234").name(request.getName())
                 .surname(request.getSurname())
                 .email(request.getEmail()).build();
