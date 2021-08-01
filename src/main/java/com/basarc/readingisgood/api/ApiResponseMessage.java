@@ -20,6 +20,7 @@ public final class ApiResponseMessage {
     public static final String CUSTOMER_SURNAME_PARAM_MISSING = "result.error.missing.customer.surname";
     public static final String CUSTOMER_ADRESS_PARAM_MISSING = "result.error.missing.customer.address";
     public static final String CUSTOMER_EMAIL_PARAM_MISSING = "result.error.missing.customer.email";
+    public static final String CUSTOMER_ALREADY_DEFINED = "result.error.customer.already.defined";
 
 
 }

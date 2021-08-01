@@ -25,7 +25,7 @@ public class Http401AuthenticationEntryPoint implements AuthenticationEntryPoint
     @Override
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
-                         AuthenticationException e) throws IOException, ServletException {
+                         AuthenticationException e) {
         handlerExceptionResolver.resolveException(request, response, null, e);
     }
 }

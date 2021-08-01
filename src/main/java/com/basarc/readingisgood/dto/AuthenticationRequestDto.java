@@ -10,6 +10,8 @@ public class AuthenticationRequestDto implements Serializable {
 
     @NotNull
     private String username;
+
+    @NotNull
     private String passo;
 
 }

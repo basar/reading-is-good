@@ -35,6 +35,7 @@ public class ApiResponseCode implements Serializable {
     public final static ApiResponseCode CUSTOMER_SURNAME_MISSING = new ApiResponseCode("RIG-0006", ApiResponseMessage.CUSTOMER_SURNAME_PARAM_MISSING, HttpStatus.BAD_REQUEST);
     public final static ApiResponseCode CUSTOMER_EMAIL_MISSING = new ApiResponseCode("RIG-0005", ApiResponseMessage.CUSTOMER_EMAIL_PARAM_MISSING, HttpStatus.BAD_REQUEST);
     public final static ApiResponseCode CUSTOMER_ADDRESS_MISSING = new ApiResponseCode("RIG-0010", ApiResponseMessage.CUSTOMER_ADRESS_PARAM_MISSING, HttpStatus.BAD_REQUEST);
+    public final static ApiResponseCode CUSTOMER_ALREADY_DEFINED = new ApiResponseCode("RIG-0012",ApiResponseMessage.CUSTOMER_ALREADY_DEFINED,HttpStatus.CONFLICT);
 
 
     @JsonValue
