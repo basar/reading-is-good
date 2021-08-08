@@ -19,7 +19,7 @@ public class AddCustomerRequestDto implements Serializable {
     @Size(min = 2, max = 50,message = ApiResponseMessage.INVALID_SURNAME)
     private String surname;
 
-    @NotNull(message = ApiResponseMessage.CUSTOMER_ADRESS_PARAM_MISSING)
+    @NotNull(message = ApiResponseMessage.CUSTOMER_ADDRESS_PARAM_MISSING)
     @Size(min = 2, max = 250,message = ApiResponseMessage.INVALID_ADDRESS)
     private String address;
 

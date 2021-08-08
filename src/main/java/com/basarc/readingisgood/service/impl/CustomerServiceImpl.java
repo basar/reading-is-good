@@ -8,10 +8,15 @@ import com.basarc.readingisgood.exception.ReadingException;
 import com.basarc.readingisgood.repository.CustomerRepository;
 import com.basarc.readingisgood.service.interfaces.CustomerService;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
+import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @Service
@@ -20,9 +25,12 @@ public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
 
+    private final ModelMapper modelMapper;
+
     @Autowired
-    public CustomerServiceImpl(CustomerRepository customerRepository) {
+    public CustomerServiceImpl(CustomerRepository customerRepository, ModelMapper modelMapper) {
         this.customerRepository = customerRepository;
+        this.modelMapper = modelMapper;
     }
 
 
@@ -31,26 +39,30 @@ public class CustomerServiceImpl implements CustomerService {
     public AddCustomerResponseDto addCustomer(AddCustomerRequestDto addCustomerRequestDto) {
 
         Optional<Customer> existCustomer = customerRepository.findByEmail(addCustomerRequestDto.getEmail());
-
         if (existCustomer.isPresent()) {
             log.debug("Customer already exist with the email:{}", addCustomerRequestDto.getEmail());
             throw new ReadingException(ApiResponseCode.CUSTOMER_ALREADY_DEFINED);
         }
-
-        //Create a new customer
-        Customer customer = new Customer(addCustomerRequestDto.getName(),
-                addCustomerRequestDto.getSurname(),
-                addCustomerRequestDto.getEmail(),
-                addCustomerRequestDto.getAddress());
-
+        //Convert to customer
+        Customer customer = convertToCustomer(addCustomerRequestDto);
         //Save the customer
         Customer managed = customerRepository.save(customer);
-
-        return AddCustomerResponseDto.builder()
-                .id(managed.getId())
-                .name(managed.getName()).surname(managed.getSurname())
-                .email(managed.getEmail()).address(managed.getAddress()).build();
+        //Convert to dto and return it
+        return convertToAddCustomerResponseDto(managed);
     }
 
+    @Override
+    public Optional<Customer> findCustomerById(String id) {
+        Assert.hasText(id, "Id must not be empty!");
+        return customerRepository.findById(id);
+    }
+
+    private Customer convertToCustomer(AddCustomerRequestDto addCustomerRequestDto) {
+        return modelMapper.map(addCustomerRequestDto, Customer.class);
+    }
+
+    private AddCustomerResponseDto convertToAddCustomerResponseDto(Customer customer) {
+        return modelMapper.map(customer, AddCustomerResponseDto.class);
+    }
 
 }

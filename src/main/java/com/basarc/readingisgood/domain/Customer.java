@@ -27,10 +27,4 @@ public class Customer extends BaseAuditableEntity {
 
     private String address;
 
-    public Customer(String name, String surname, String email, String address) {
-        this.name = name;
-        this.surname = surname;
-        this.email = email;
-        this.address = address;
-    }
 }

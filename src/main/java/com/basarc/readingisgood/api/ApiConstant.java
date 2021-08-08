@@ -8,5 +8,6 @@ public final class ApiConstant {
 
     public static final String CUSTOMER = HOME + VERSION + "/customers";
     public static final String BOOK = HOME + VERSION + "/books";
+    public static final String ORDER = HOME + VERSION + "/orders";
 
 }

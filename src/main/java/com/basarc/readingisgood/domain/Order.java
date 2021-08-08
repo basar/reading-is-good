@@ -1,10 +1,11 @@
 package com.basarc.readingisgood.domain;
 
 import com.basarc.readingisgood.audit.BaseAuditableEntity;
+import com.basarc.readingisgood.domain.enums.OrderStatus;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.Id;
@@ -13,19 +14,22 @@ import java.math.BigDecimal;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
-@Document("books")
-public class Book extends BaseAuditableEntity {
+@Document("orders")
+public class Order extends BaseAuditableEntity {
 
     @Id
     private String id;
 
-    @Indexed(unique = true)
-    private String name;
+    @DBRef
+    private Customer customer;
 
-    private String author;
+    @DBRef
+    private Book book;
 
-    private BigDecimal price;
+    private int quantity;
 
-    private long stock;
+    private BigDecimal totalPrice;
+
+    private OrderStatus orderStatus;
 
 }

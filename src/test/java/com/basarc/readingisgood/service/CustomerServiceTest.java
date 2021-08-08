@@ -8,6 +8,7 @@ import com.basarc.readingisgood.service.impl.CustomerServiceImpl;
 import com.basarc.readingisgood.service.interfaces.CustomerService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
@@ -18,7 +19,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@ContextConfiguration(classes = {CustomerServiceImpl.class})
+@ContextConfiguration(classes = {CustomerServiceImpl.class, ModelMapper.class})
 @ExtendWith(SpringExtension.class)
 public class CustomerServiceTest {
 
@@ -39,9 +40,7 @@ public class CustomerServiceTest {
 
         AddCustomerRequestDto requestDto = new AddCustomerRequestDto();
         requestDto.setEmail(existEmail);
-        assertThrows(ReadingException.class, () -> {
-            customerService.addCustomer(requestDto);
-        });
+        assertThrows(ReadingException.class, () -> customerService.addCustomer(requestDto));
 
         verify(customerRepository).findByEmail(existEmail);
     }
@@ -67,6 +66,29 @@ public class CustomerServiceTest {
         verify(customerRepository).findByEmail(any());
         verify(customerRepository).save(any());
 
+    }
+
+
+    @Test
+    public void testFindCustomerByIdWhenIdHasNotText() {
+        assertThrows(IllegalArgumentException.class, () -> customerService.findCustomerById(null));
+        assertThrows(IllegalArgumentException.class, () -> customerService.findCustomerById(""));
+        assertThrows(IllegalArgumentException.class, () -> customerService.findCustomerById(" "));
+    }
+
+    @Test
+    public void testFindCustomerByIdWhenIdValid() {
+
+        Customer customer = new Customer();
+        customer.setId("12345");
+
+        when(customerRepository.findById("12345")).thenReturn(Optional.of(customer));
+        assertEquals(Optional.of(customer),customerService.findCustomerById("12345"));
+
+        when(customerRepository.findById("12345")).thenReturn(Optional.empty());
+        assertEquals(Optional.empty(),customerService.findCustomerById("12345"));
+
+        verify(customerRepository,times(2)).findById("12345");
     }
 
 
