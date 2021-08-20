@@ -11,6 +11,6 @@ public interface CustomerService {
 
     AddCustomerResponseDto addCustomer(AddCustomerRequestDto addCustomerRequestDto);
 
-    Optional<Customer> findCustomerById(String id);
+    Optional<Customer> findById(String id);
 
 }

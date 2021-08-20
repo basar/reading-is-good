@@ -7,6 +7,7 @@ import com.basarc.readingisgood.domain.Order;
 import com.basarc.readingisgood.domain.enums.OrderStatus;
 import com.basarc.readingisgood.dto.CreateOrderRequestDto;
 import com.basarc.readingisgood.dto.OrderDto;
+import com.basarc.readingisgood.dto.OrderStatsDto;
 import com.basarc.readingisgood.dto.PageableListDto;
 import com.basarc.readingisgood.exception.ReadingException;
 import com.basarc.readingisgood.repository.OrderRepository;
@@ -19,20 +20,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.DateOperators;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
-import java.util.Arrays;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
+
 @Service
 @Slf4j
 public class OrderServiceImpl implements OrderService {
+
+    private final static long MAX_DAY_QUERY_INTERVAL = 90;
+
+    private final MongoTemplate mongoTemplate;
 
     private final OrderRepository orderRepository;
 
@@ -43,8 +56,10 @@ public class OrderServiceImpl implements OrderService {
     private final ModelMapper modelMapper;
 
     @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository, CustomerService customerService,
+    public OrderServiceImpl(MongoTemplate mongoTemplate, OrderRepository orderRepository,
+                            CustomerService customerService,
                             BookService bookService, ModelMapper modelMapper) {
+        this.mongoTemplate = mongoTemplate;
         this.orderRepository = orderRepository;
         this.customerService = customerService;
         this.bookService = bookService;
@@ -61,7 +76,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto createOrder(CreateOrderRequestDto requestDto) {
 
         //Find the customer
-        final Customer customer = customerService.findCustomerById(requestDto.getCustomerId()).orElseThrow(() -> {
+        final Customer customer = customerService.findById(requestDto.getCustomerId()).orElseThrow(() -> {
             log.error("Customer could not be found with id:{}", requestDto.getCustomerId());
             return new ReadingException(ApiResponseCode.DATA_INTEGRITY_ERROR);
         });
@@ -85,6 +100,7 @@ public class OrderServiceImpl implements OrderService {
         order.setTotalPrice(totalPrice);
         //Save the order
         orderRepository.save(order);
+        log.info("New order has been saved: {}", order);
 
         return convertToOrderDto(order);
     }
@@ -104,7 +120,7 @@ public class OrderServiceImpl implements OrderService {
     public PageableListDto<OrderDto> findOrdersByCustomerId(String customerId, Integer offset, Integer limit, String sortBy) {
 
         //Find the customer
-        final Customer customer = customerService.findCustomerById(customerId).orElseThrow(() -> {
+        final Customer customer = customerService.findById(customerId).orElseThrow(() -> {
             log.error("Customer could not be found with id:{}", customerId);
             return new ReadingException(ApiResponseCode.DATA_INTEGRITY_ERROR);
         });
@@ -117,6 +133,56 @@ public class OrderServiceImpl implements OrderService {
         result.setRows(convertToOrderDtoList(orders.getContent()));
 
         return result;
+    }
+
+    @Override
+    public List<OrderDto> findOrdersByDateInterval(LocalDate startDate, LocalDate endDate) {
+
+        if (startDate == null || endDate == null) {
+            log.error("StartDate and EndDate must not be null.");
+            throw new ReadingException(ApiResponseCode.BAD_REQUEST);
+        }
+
+        if (!startDate.isBefore(endDate)) {
+            log.error("Invalid values for startDate {} and endDate {}", startDate, endDate);
+            throw new ReadingException(ApiResponseCode.BAD_REQUEST);
+        }
+
+        if (ChronoUnit.DAYS.between(startDate, endDate) > MAX_DAY_QUERY_INTERVAL) {
+            log.error("Duration between dates must not exceed the max interval");
+            throw new ReadingException(ApiResponseCode.BAD_REQUEST);
+        }
+
+        List<Order> orders = orderRepository.findAllByCreatedDateBetween(startDate.atStartOfDay(),
+                endDate.atStartOfDay().plusDays(1)).orElse(Collections.emptyList());
+
+        return convertToOrderDtoList(orders);
+    }
+
+
+    @Override
+    public List<OrderStatsDto> findMonthlyOrderStats() {
+
+        final Aggregation aggregation = newAggregation(
+                //Get only PURCHASED ones
+                match(Criteria.where("orderStatus").is(OrderStatus.PURCHASED)),
+                //We need two fields and month
+                project("quantity", "totalPrice").and(DateOperators.Month.month("$createdDate")).as("month"),
+                //Group to month and calculate other fields
+                group("month").count().as("totalOrderCount")
+                        .sum("quantity").as("totalBookCount")
+                        .sum("totalPrice").as("totalPurchasedAmount"),
+                //We have to re-projection to get rid of the _id field
+                project("totalOrderCount", "totalBookCount", "totalPurchasedAmount")
+                        .and("month").previousOperation(),
+                //Sort by month
+                sort(Sort.Direction.DESC, "month")
+        );
+
+        AggregationResults<OrderStatsDto> aggregationResults = mongoTemplate.aggregate(aggregation, Order.class,
+                OrderStatsDto.class);
+
+        return aggregationResults.getMappedResults();
     }
 
     private OrderDto convertToOrderDto(Order order) {

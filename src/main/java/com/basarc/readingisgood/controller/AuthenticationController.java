@@ -19,7 +19,7 @@ public class AuthenticationController extends AbstractApiController {
         this.userAuthenticationService = userAuthenticationService;
     }
 
-    @PostMapping(ApiConstant.AUTHENTICATE)
+    @PostMapping(ApiConstant.Path.AUTHENTICATE)
     @ResponseBody
     public ResponseEntity<?> doAuthenticate(@RequestBody @Valid AuthenticationRequestDto request) {
         return ok(userAuthenticationService.doAuthentication(request));

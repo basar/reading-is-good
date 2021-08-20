@@ -52,7 +52,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Optional<Customer> findCustomerById(String id) {
+    public Optional<Customer> findById(String id) {
         Assert.hasText(id, "Id must not be empty!");
         return customerRepository.findById(id);
     }

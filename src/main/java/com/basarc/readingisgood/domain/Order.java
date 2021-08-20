@@ -7,6 +7,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
 
 import javax.persistence.Id;
 import java.math.BigDecimal;
@@ -28,6 +30,7 @@ public class Order extends BaseAuditableEntity {
 
     private int quantity;
 
+    @Field(targetType = FieldType.DECIMAL128)
     private BigDecimal totalPrice;
 
     private OrderStatus orderStatus;

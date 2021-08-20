@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping(ApiConstant.BOOK)
+@RequestMapping(ApiConstant.Path.BOOK)
 public class BookController extends AbstractApiController {
 
     private final BookService bookService;

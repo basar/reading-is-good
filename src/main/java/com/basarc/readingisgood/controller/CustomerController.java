@@ -15,7 +15,7 @@ import javax.validation.constraints.Max;
 
 @RestController
 @Validated
-@RequestMapping(ApiConstant.CUSTOMER)
+@RequestMapping(ApiConstant.Path.CUSTOMER)
 public class CustomerController extends AbstractApiController {
 
     private final CustomerService customerService;

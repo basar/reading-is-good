@@ -6,6 +6,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
 
 import javax.persistence.Id;
 import java.math.BigDecimal;
@@ -24,6 +26,7 @@ public class Book extends BaseAuditableEntity {
 
     private String author;
 
+    @Field(targetType = FieldType.DECIMAL128)
     private BigDecimal price;
 
     private long stock;

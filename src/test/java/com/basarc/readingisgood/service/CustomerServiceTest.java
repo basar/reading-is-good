@@ -71,9 +71,9 @@ public class CustomerServiceTest {
 
     @Test
     public void testFindCustomerByIdWhenIdHasNotText() {
-        assertThrows(IllegalArgumentException.class, () -> customerService.findCustomerById(null));
-        assertThrows(IllegalArgumentException.class, () -> customerService.findCustomerById(""));
-        assertThrows(IllegalArgumentException.class, () -> customerService.findCustomerById(" "));
+        assertThrows(IllegalArgumentException.class, () -> customerService.findById(null));
+        assertThrows(IllegalArgumentException.class, () -> customerService.findById(""));
+        assertThrows(IllegalArgumentException.class, () -> customerService.findById(" "));
     }
 
     @Test
@@ -83,10 +83,10 @@ public class CustomerServiceTest {
         customer.setId("12345");
 
         when(customerRepository.findById("12345")).thenReturn(Optional.of(customer));
-        assertEquals(Optional.of(customer),customerService.findCustomerById("12345"));
+        assertEquals(Optional.of(customer),customerService.findById("12345"));
 
         when(customerRepository.findById("12345")).thenReturn(Optional.empty());
-        assertEquals(Optional.empty(),customerService.findCustomerById("12345"));
+        assertEquals(Optional.empty(),customerService.findById("12345"));
 
         verify(customerRepository,times(2)).findById("12345");
     }

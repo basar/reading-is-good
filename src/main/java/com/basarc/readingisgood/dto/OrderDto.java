@@ -20,7 +20,7 @@ public class OrderDto implements Serializable {
 
     private String bookId;
 
-    private Integer quantity;
+    private int quantity;
 
     private BigDecimal totalPrice;
 
