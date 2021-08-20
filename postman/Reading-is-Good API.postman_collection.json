@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "e04d1621-b600-499e-b9b3-ef68fc24edae",
+		"_postman_id": "f887d732-aca9-48da-b380-3b98c83ee83b",
 		"name": "Reading-is-Good API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -9,13 +9,54 @@
 			"name": "v1",
 			"item": [
 				{
-					"name": "addNewCustomer",
+					"name": "authenticate",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": null,\n    \"surname\": \"Çetinkaya\",\n    \"email\": \"basarcetinkaya@gmail.com\",\n    \"address\": \"Ankara\"\n}",
+							"raw": "{\n    \"username\":\"{{username}}\",\n    \"passo\":\"{{passo}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/authenticate",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"authenticate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "addNewCustomer",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Başar\",\n    \"surname\": \"Çetinkaya\",\n    \"email\": \"basarcetinkaya@gmail.com\",\n    \"address\": \"Deneme\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -30,6 +71,289 @@
 							"path": [
 								"customers",
 								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "addNewBook",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"The Stranger\",\n    \"author\": \"Albert Camus\",\n    \"price\": 10.00,\n    \"initialStock\": 15\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/books/add",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"books",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateBookStock",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"bookId\":\"610852eede160b44d3b33843\",\n    \"stockAmount\":5\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/books/update",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"books",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createOrder",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"customerId\": \"61069150504ff62acac91875\",\n    \"bookId\": \"61101e804d9cf33a21ba59ef\",\n    \"quantity\": 5\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/orders/create",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"orders",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getOrder",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/orders/610edd89c0e806103f9ac960",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"orders",
+								"610edd89c0e806103f9ac960"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getOrdersByCustomerId",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/customers/61069150504ff62acac91875/orders?offset=5&limit=5&sortBy=createdDate",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"customers",
+								"61069150504ff62acac91875",
+								"orders"
+							],
+							"query": [
+								{
+									"key": "offset",
+									"value": "5"
+								},
+								{
+									"key": "limit",
+									"value": "5"
+								},
+								{
+									"key": "sortBy",
+									"value": "createdDate"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getOrdersByDateInterval",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/orders/list?startDate=2021-08-07&endDate=2021-08-10",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"orders",
+								"list"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2021-08-07"
+								},
+								{
+									"key": "endDate",
+									"value": "2021-08-10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getMonthlyOrderStats",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{jwtToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/stats/orders",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"stats",
+								"orders"
 							]
 						}
 					},
@@ -62,6 +386,18 @@
 		{
 			"key": "url",
 			"value": "http://localhost:8085/api/v1"
+		},
+		{
+			"key": "jwtToken",
+			"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJyaWd1c2VyIiwiaWF0IjoxNjI3MjQ4NTA2LCJleHAiOjE2MjcyNDk0MDZ9.f8_qi-2j_ikhWr2_xSlN1VcYvE8mmazEG5jwJn3NGMJuQ9WyYq4AXlWAhR-oGVpA0A0yTtEd4HojCg-wHY2j-Q"
+		},
+		{
+			"key": "username",
+			"value": "riguser"
+		},
+		{
+			"key": "passo",
+			"value": "rigpasso"
 		}
 	]
 }
