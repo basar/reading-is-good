@@ -1,5 +1,6 @@
 package com.basarc.readingisgood.api;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -62,6 +63,7 @@ public class ApiResponseCode implements Serializable {
     @Nullable
     private String message;
 
+    @JsonIgnore
     private HttpStatus httpStatus;
 
     public ApiResponseCode(String code, HttpStatus httpStatus) {

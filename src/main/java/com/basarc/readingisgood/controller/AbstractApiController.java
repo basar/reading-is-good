@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 
 public abstract class AbstractApiController {
 
-    public <T> ResponseEntity<?> ok(T body){
+    public <T> ResponseEntity<ApiResponse<T>> ok(T body){
         return new ResponseEntity<>
                 (new ApiResponse<>(new ApiResponseHeader(ApiResponseCode.SUCCESS), body), HttpStatus.OK);
     }
